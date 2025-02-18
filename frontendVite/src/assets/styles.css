@@ -1,0 +1,31 @@
+/* src/assets/styles.css */
+/* src/assets/styles.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 基本页面布局 */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+  
+  #app {
+    /* max-width: 800px; */
+    margin: 0 auto;
+    /* padding: 20px; */
+  }
+  
+  /* 链接样式 */
+  a {
+    color: #eb5f8e;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  

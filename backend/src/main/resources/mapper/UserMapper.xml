@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lowlifelove.mapper.UserMapper">
+
+    <!-- 根据 Email 查找用户 -->
+    <select id="findByEmail" resultType="com.lowlifelove.model.User">
+        SELECT id, username, email, password, nickname, is_author, is_client, created_at, updated_at
+        FROM user
+        WHERE email = #{email}
+    </select>
+
+    <!-- 插入新用户 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user (username, email, password, nickname, is_author, is_client, created_at, updated_at)
+        VALUES (#{username}, #{email}, #{password}, #{nickname}, #{isAuthor}, #{isClient}, NOW(), NOW())
+    </insert>
+
+    <!-- 根据 ID 查找用户 -->
+    <select id="findById" resultType="com.lowlifelove.model.User">
+        SELECT id, username, email, password, nickname, is_author, is_client, created_at, updated_at
+        FROM user
+        WHERE id = #{id}
+    </select>
+
+</mapper>
