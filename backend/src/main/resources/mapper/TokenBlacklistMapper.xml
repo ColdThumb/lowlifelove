@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lowlifelove.mapper.TokenBlacklistMapper">
+    <insert id="insertTokenBlacklist" parameterType="com.lowlifelove.model.TokenBlacklist">
+        INSERT INTO token_blacklist (token, created_at)
+        VALUES (#{token}, #{createdAt})
+    </insert>
+    
+    <!-- 可选：查询 token 是否存在黑名单中 -->
+    <select id="existsByToken" resultType="boolean" parameterType="string">
+        SELECT COUNT(1) > 0 FROM token_blacklist WHERE token = #{token}
+    </select>
+</mapper>

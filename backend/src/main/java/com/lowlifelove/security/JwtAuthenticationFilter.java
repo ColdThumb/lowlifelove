@@ -1,8 +1,6 @@
 package com.lowlifelove.security;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -12,9 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.lowlifelove.utils.JwtUtil;
@@ -24,9 +21,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
 	private final JwtUtil jwtUtil;
+	private final MyUserDetailsService userDetailsService;
 
-	public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+	public JwtAuthenticationFilter(JwtUtil jwtUtil, MyUserDetailsService userDetailsService) {
 		this.jwtUtil = jwtUtil;
+		this.userDetailsService = userDetailsService;
 	}
 
 	@Override
@@ -44,15 +43,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			try {
 				if (jwtUtil.validateToken(token)) {
 					String subject = jwtUtil.parseTokenAndGetSubject(token);
-					log.debug("Token valid. Subject: {}", subject);
-					List<String> roles = jwtUtil.getRolesFromToken(token);
-					log.debug("Roles extracted from token: {}", roles);
-					List<GrantedAuthority> authorities = roles.stream()
-							.map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+					// 假定 subject 存储的是用户ID（字符串形式），转换为 Long 类型
+					Long userId = Long.parseLong(subject);
+					log.debug("Token valid. UserId: {}", userId);
+
+					// 通过用户ID加载用户详情
+					UserDetails userDetails = userDetailsService.loadUserById(userId);
 					UsernamePasswordAuthenticationToken authentication =
-							new UsernamePasswordAuthenticationToken(subject, null, authorities);
+							new UsernamePasswordAuthenticationToken(userDetails, null,
+									userDetails.getAuthorities());
 					SecurityContextHolder.getContext().setAuthentication(authentication);
-					log.debug("Authentication set in SecurityContext for subject: {}", subject);
+					log.debug("Authentication set in SecurityContext for userId: {}", userId);
 				} else {
 					log.debug("Token validation failed for token: {}", token);
 				}

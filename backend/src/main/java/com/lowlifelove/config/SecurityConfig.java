@@ -10,6 +10,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.lowlifelove.security.JwtAuthenticationFilter;
+import com.lowlifelove.security.MyUserDetailsService;
 import com.lowlifelove.utils.JwtUtil;
 
 @Configuration
@@ -17,10 +18,12 @@ import com.lowlifelove.utils.JwtUtil;
 public class SecurityConfig {
 
 	private final JwtUtil jwtUtil;
+	private final MyUserDetailsService myUserDetailsService;
 
-	// 通过构造器注入 JwtUtil
-	public SecurityConfig(JwtUtil jwtUtil) {
+	// 构造器注入 JwtUtil 和 MyUserDetailsService
+	public SecurityConfig(JwtUtil jwtUtil, MyUserDetailsService myUserDetailsService) {
 		this.jwtUtil = jwtUtil;
+		this.myUserDetailsService = myUserDetailsService;
 	}
 
 	@Bean
@@ -37,7 +40,7 @@ public class SecurityConfig {
 				.and()
 				// 添加自定义的 JwtAuthenticationFilter，在 UsernamePasswordAuthenticationFilter 之前处理
 				// token
-				.addFilterBefore(new JwtAuthenticationFilter(jwtUtil),
+				.addFilterBefore(new JwtAuthenticationFilter(jwtUtil, myUserDetailsService),
 						UsernamePasswordAuthenticationFilter.class)
 				// 如果只使用 JWT 认证，可以考虑移除 httpBasic() 配置，否则支持多种认证方式
 				.httpBasic();

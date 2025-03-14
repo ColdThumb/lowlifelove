@@ -11,4 +11,8 @@ public interface AuthService {
 	String login(LoginRequest request);
 
 	UserResponse getCurrentUser(String token);
+
+	void switchRole(Long userId);
+	
+	void logout(String token);
 }

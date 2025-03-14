@@ -1,6 +1,6 @@
 package com.lowlifelove.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
@@ -12,9 +12,10 @@ public class Order {
 	private String description;
 	private Double budget;
 	private String status; // OPEN, ASSIGNED, COMPLETED, CLOSED
-	private Long customerId; // 发单人ID
+	private Long clientId; // 发单人ID
 	private Long assignedAuthorId;// 选定的作者ID
-	private Date createdAt;
-	private Date updatedAt;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
+	private Integer isDeleted;
 
 }

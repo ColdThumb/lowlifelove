@@ -24,5 +24,24 @@
         FROM user
         WHERE id = #{id}
     </select>
+    
+    <!-- 根据用户ID查询 UserDTO 对象 -->
+    <select id="findUserDTOById" resultType="com.lowlifelove.dto.UserDTO">
+        SELECT 
+            id,
+            is_client AS isClient,
+            is_author AS isAuthor
+        FROM user
+        WHERE id = #{id}
+    </select>
+    
+    <!-- 更新用户角色信息 -->
+    <update id="updateUserRole">
+        UPDATE user
+        SET 
+            is_client = #{isClient},
+            is_author = #{isAuthor}
+        WHERE id = #{id}
+    </update>
 
 </mapper>
