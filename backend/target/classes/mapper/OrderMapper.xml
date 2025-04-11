@@ -5,9 +5,10 @@
 <mapper namespace="com.lowlifelove.mapper.OrderMapper">
     
     <insert id="insertOrder" parameterType="com.lowlifelove.model.Order" useGeneratedKeys="true" keyProperty="id">
-    INSERT INTO `order` (title, description, budget, status, client_id, assigned_author_id, created_at, updated_at)
-    VALUES (#{title}, #{description}, #{budget}, #{status}, #{clientId}, #{assignedAuthorId}, NOW(), NOW())
+    INSERT INTO `order` (category, description, budget, status, client_id, assigned_author_id, created_at, updated_at)
+    VALUES (#{category}, #{description}, #{budget}, #{status}, #{clientId}, #{assignedAuthorId}, NOW(), NOW())
 	</insert>
+	
 
     <select id="getOrderById" resultType="com.lowlifelove.model.Order">
         SELECT * 
@@ -16,4 +17,54 @@
           AND is_deleted = 0
     </select>
     
+    
+    <!-- <select id="searchOrders" resultType="com.lowlifelove.model.Order">
+  		SELECT * FROM orders
+  		WHERE is_deleted = 0
+  	<if test="keyword != null and keyword != ''">
+    	AND description LIKE CONCAT('%', #{keyword}, '%')
+  	</if>
+  	<if test="category != null and category != ''">
+    	AND category = #{category}
+  	</if>
+  	<if test="minBudget != null">
+    	AND budget &gt;= #{minBudget}
+  	</if>
+  	<if test="maxBudget != null">
+    	AND budget &lt;= #{maxBudget}
+  	</if>
+	</select> -->
+	
+	
+	<select id="selectByAuthorId" resultType="com.lowlifelove.model.Order">
+    SELECT * FROM `order`
+    WHERE assigned_author_id = #{authorId}
+      AND status = 'ASSIGNED'
+      AND is_deleted = 0
+	</select>
+	
+	
+	<select id="countApplication" resultType="int">
+    SELECT COUNT(*) FROM order_applications
+    WHERE order_id = #{orderId} AND author_id = #{authorId}
+	</select>
+	
+
+	<insert id="insertApplication">
+    INSERT INTO order_applications (order_id, author_id)
+    VALUES (#{orderId}, #{authorId})
+	</insert>
+	
+	
+	<select id="canCustomerViewAuthorArticles" resultType="boolean">
+    SELECT EXISTS (
+        SELECT 1
+        FROM order_applications oa
+        JOIN `order` o ON oa.order_id = o.id
+        WHERE oa.author_id = #{authorId}
+          AND o.client_id = #{customerId}
+          AND o.status = 'OPEN'
+    )
+	</select>
+
 </mapper>

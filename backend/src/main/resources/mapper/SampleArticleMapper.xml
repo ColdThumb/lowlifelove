@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lowlifelove.mapper.SampleArticleMapper">
+
+    <insert id="insertArticleWithoutPath" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sample_articles (author_id, title)
+        VALUES (#{authorId}, #{title})
+    </insert>
+
+
+    <update id="updateContentPath">
+        UPDATE sample_articles SET content_path = #{contentPath} WHERE id = #{id}
+    </update>
+
+
+    <select id="getArticleById" resultType="com.lowlifelove.model.SampleArticle">
+        SELECT * FROM sample_articles WHERE id = #{id}
+    </select>
+
+
+    <select id="getTitlesByAuthorId" resultType="com.lowlifelove.model.SampleArticle">
+        SELECT id, title FROM sample_articles WHERE author_id = #{authorId}
+    </select>
+    
+    
+    <select id="selectAllByAuthor" resultType="com.lowlifelove.model.SampleArticle">
+    	SELECT * FROM sample_articles
+    	WHERE author_id = #{authorId}
+	</select>
+	
+	
+	<update id="updateTitle">
+    	UPDATE sample_articles SET title = #{title} WHERE id = #{id}
+	</update>
+
+	<delete id="deleteArticle">
+    	DELETE FROM sample_articles WHERE id = #{id}
+	</delete>
+	
+    
+
+</mapper>

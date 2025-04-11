@@ -43,9 +43,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			try {
 				if (jwtUtil.validateToken(token)) {
 					String subject = jwtUtil.parseTokenAndGetSubject(token);
-					// 假定 subject 存储的是用户ID（字符串形式），转换为 Long 类型
 					Long userId = Long.parseLong(subject);
 					log.debug("Token valid. UserId: {}", userId);
+					
+					// 存到 request attribute
+				    request.setAttribute("userId", userId);
 
 					// 通过用户ID加载用户详情
 					UserDetails userDetails = userDetailsService.loadUserById(userId);

@@ -1,8 +1,11 @@
 package com.lowlifelove.controller;
 
 import java.security.Principal;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,9 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lowlifelove.dto.OrderRequestDTO;
+import com.lowlifelove.elasticsearch.model.EsOrder;
 import com.lowlifelove.model.Order;
 import com.lowlifelove.security.MyUserDetails;
 import com.lowlifelove.service.OrderService;
@@ -62,4 +67,17 @@ public class OrderController {
     public Order getOrderById(@PathVariable Long id) {
         return orderService.getOrderById(id);
     }
+    
+    @GetMapping("/search")
+    public Page<EsOrder> searchOrders(
+        @RequestParam(required = false) String keyword,
+        @RequestParam(required = false) String category,
+        @RequestParam(required = false) Integer minBudget,
+        @RequestParam(required = false) Integer maxBudget,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size
+    ) {
+        return orderService.searchOrdersByKeyword(keyword, category, minBudget, maxBudget, PageRequest.of(page, size));
+    }
+    
 }
